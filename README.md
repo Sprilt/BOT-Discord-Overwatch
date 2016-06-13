@@ -1,5 +1,5 @@
 # BOT-Discord-Overwatch
-Overwatch Stats - Discord
+Overwatch Stats - Discord [BETA]
 
 # Requeriments
 NodeJS
