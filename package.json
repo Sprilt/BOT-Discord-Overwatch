@@ -1,0 +1,42 @@
+{
+  "name": "Overwatch Stats",
+  "version": "1.0",
+  "description": "Javascript Bot for Discord. Game: Overwatch",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Juceztp/BOT-Discord-Overwatch.git"
+  },
+  "keywords": [
+    "Discord",
+    "Discordapp",
+    "Client",
+    "Bot",
+    "Overwatch",
+    "Game",
+    "Library"
+  ],
+  "author": "Juceztp",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Juceztp/BOT-Discord-Overwatch/issues"
+  },
+  "homepage": "https://github.com/Juceztp/BOT-Discord-Overwatch#readme",
+  "dependencies": {
+    "bluebird": "^3.4.0",
+    "needle": "^1.0.0",
+    "path": "^0.12.7",
+    "request-json": "^0.5.6",
+    "tweetnacl": "^0.14.0",
+    "ws": "^1.1.0"
+  },
+  "optionalDependencies": {
+    "node-opus": "^0.1.0"
+  },
+  "devDependencies": {
+    "babel": "^6.5.2"
+  }
+}
