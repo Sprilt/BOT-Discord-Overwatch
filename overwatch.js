@@ -1,7 +1,7 @@
 /*Variable area*/
 var Discord = require('discord.io');
 var bot = new Discord.Client({
-	token: "MTg5NDYyNzYzMjM4NzE5NDg5.Cjdicw.JujDZRnk1AWVWDMP6JFu9t3ef7A",
+	token: "",
 	autorun: true
 });
 
@@ -16,7 +16,7 @@ bot.on("ready", function(event) {
 bot.on("message", function(user, userID, channelID, message, event) {
 	
     //LANG
-    var lang = 'en';
+    var lang = 'es';
     
     console.log(user + " - " + userID);
 	console.log("in " + channelID);
@@ -31,54 +31,66 @@ bot.on("message", function(user, userID, channelID, message, event) {
         //COMMAND
         cm = message.toLowerCase().split(' ')[0];
         
-        //Sending a message with our helper function
+        //INI ARRAY PLATFORMS/REGION
+        var plat_reg = ["pc/us/", "pc/eu/", "psn/global/", "xbl/global/"];
+        
+        if(cm!='!ayuda' && cm!='!help' && array_msg.length>=2){
 
-            if(cm!='!ayuda' && cm!='!help' && array_msg.length>=2){
+            //BATTLETAG
+            tag = battletag(message);
+            btag = '**Battletag:** *'+tag+'*\n';
+            heroe='';
+            if((cm=='!heroe' || cm=='!hero') && array_msg.length>=3){
+                heroe = message.split(' ')[1].toLowerCase();
+                heroe = heroe.charAt(0).toUpperCase() + heroe.slice(1);
+                if(lang=='es')
+                    btag+= '**Heroe:** *'+heroe+'*\n';
+                else
+                    btag+= '**Hero:** *'+heroe+'*\n';
+            }else if(cm=='!heroe' || cm=='!hero')
+                heroe='No Heroe';
+
+            //COMMAND
+            if(commandOW(cm,tag,heroe,plat_reg[0]) && heroe!='No Heroe'){
                 
-                //BATTLETAG
-                btag = '**Battletag:** *'+message.split(' ')[1]+'*\n';
-                heroe='';
-                if((cm=='!heroe' || cm=='!hero') && array_msg.length>=3){
-                    heroe = message.split(' ')[2].toLowerCase();
-                    heroe = heroe.charAt(0).toUpperCase() + heroe.slice(1);
-                    if(lang=='es')
-                        btag+= '**Heroe:** *'+heroe+'*\n';
-                    else
-                        btag+= '**Hero:** *'+heroe+'*\n';
-                }else if(cm=='!heroe' || cm=='!hero')
-                    heroe='No Heroe';
-                    
-                
-                if(commandOW(message,heroe,lang) && heroe!='No Heroe'){
-                    var request = require('request');
-                    request('https://api.lootbox.eu/'+commandOW(message,heroe,lang), function (error, response, body) {
-                        if (!error && body!='{}' && response.statusCode == 200)
-                            sendMessages(channelID, ["<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);
-                        else if(response.statusCode == 500 || body=='{}'){
-                            if(cm!='!heroe' && lang=='es')
-                                sendMessages(channelID, ["<@"+userID+">\n\n"+errorMessage(2,lang)]);
-                            else if(cm!='!hero' && lang!='es')
-                                sendMessages(channelID, ["<@"+userID+">\n\n"+errorMessage(2,lang)]);
-                            else
-                                sendMessages(channelID, ["<@"+userID+">\n\n"+errorMessage(3,lang)]);
-                        }else if(response.statusCode == 408){
-                            if(lang=='es')
-                                sendMessages(channelID, ["<@"+userID+">\nError: "+response.statusCode+", se han realizado múltiples peticiones por favor espere unos segundos y realícela nuevamente."]);
-                            else
-                                sendMessages(channelID, ["<@"+userID+">\nError: "+response.statusCode+", We failed to process your request. Please wait a few seconds and try again."]);
-                        }else{
-                            if(lang=='es')
-                                sendMessages(channelID, ["<@"+userID+">\nError: "+response.statusCode+", si el problema persiste contactanos."]);
-                            else
-                                sendMessages(channelID, ["<@"+userID+">\nError: "+response.statusCode+", If problem persists please contact us."]);
-                        }
-                 });
-                }else
-                    sendMessages(channelID, ["<@"+userID+">\n\n"+errorMessage(1,lang)]);
-            }else{
+                var request = require('request');
+
+                request('https://api.lootbox.eu/'+commandOW(cm,tag,heroe,plat_reg[0]), function (error, response, body) {
+                    if (!error && response.statusCode == 200 && apiResult(body))
+                            sendMessages(channelID, ["<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);  
+                    else{
+                        request('https://api.lootbox.eu/'+commandOW(cm,tag,heroe,plat_reg[1]), function (error, response, body) {
+                            if (!error && response.statusCode == 200 && apiResult(body))
+                                sendMessages(channelID, ["<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);
+                            else{
+                                request('https://api.lootbox.eu/'+commandOW(cm,tag,heroe,plat_reg[2]), function (error, response, body) {
+                                    if (!error && response.statusCode == 200 && apiResult(body))
+                                        sendMessages(channelID, ["<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);
+                                    else{
+                                        request('https://api.lootbox.eu/'+commandOW(cm,tag,heroe,plat_reg[3]), function (error, response, body) {
+                                            if (!error && response.statusCode == 200 && apiResult(body))
+                                                sendMessages(channelID, ["<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);
+                                            else{
+                                                if(lang=='es')
+                                                    sendMessages(channelID, ["<@"+userID+">\nError, si el problema persiste contactanos."]);
+                                                else
+                                                    sendMessages(channelID, ["<@"+userID+">\nError, If problem persists please contact us."]);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+            }else
                 sendMessages(channelID, ["<@"+userID+">\n\n"+errorMessage(1,lang)]);
-            }
-        }
+
+        }else
+            sendMessages(channelID, ["<@"+userID+">\n\n"+errorMessage(1,lang)]);
+        
+    }
 
 });
 
@@ -157,41 +169,67 @@ function createMessageApi1(body,msg,cm,lang){
           if(s!='')
               msg+="**"+s+":** *"+v+"*\n"; 
     });
-    return msg.replace("hours"," horas").replace("minutes"," minutos").replace("seconds"," segundos");
+    
+    if(lang=='es')
+        return msg.replace("hours"," horas").replace("minutes"," minutos").replace("seconds"," segundos");
+    else
+        return msg.replace("hours"," hours").replace("minutes"," minutes").replace("seconds"," seconds");
 }
 
-function commandOW(command,heroe,lang){
-    res = command.split(" ");
-    if(lang=='es'){
-        switch(res[0]) {
-           case '!perfil': 
-                                return 'pc/us/'+res[1].replace("#","-")+'/profile';
-           case '!heroe':       return 'pc/us/'+res[1].replace("#","-")+'/hero/'+heroe.replace("Torbjorn","Torbjoern")+'/';
-           case '!combate': 
-           case '!asistencia':        
-           case '!records':          
-           case '!promedio':    
-           case '!muerte':       
-           case '!muerte':    
-           case '!medallas':       
-                                return 'pc/us/'+res[1].replace("#","-")+'/allHeroes/';
-           default: return 0;
-        }
-    }else{
-        switch(res[0]) {
-           case '!profile':
-                                return 'pc/us/'+res[1].replace("#","-")+'/profile';
-           case '!hero':        return 'pc/us/'+res[1].replace("#","-")+'/hero/'+heroe.replace("Torbjorn","Torbjoern")+'/'; 
-           case '!combat':   
-           case '!assists':       
-           case '!best':    
-           case '!average':          
-           case '!death':          
-           case '!medals':    
-                                return 'pc/us/'+res[1].replace("#","-")+'/allHeroes/';
-           default: return 0;
-        }
+function apiResult(body){
+    var error = 1;
+    JSON.parse(body,function(k, v) {
+        if(k=='statusCode')
+            error = 0;
+    });
+    return error;
+}
+
+function commandOW(cm,bt,heroe,plat_reg){
+    
+    switch(cm) {
+       case '!profile':
+       case '!perfil': 
+                            return plat_reg+''+bt.replace("#","-")+'/profile';
+       case '!hero':
+       case '!heroe':       
+                            return plat_reg+''+bt.replace("#","-")+'/hero/'+heroe.replace("Torbjorn","Torbjoern")+'/';
+       case '!combate': 
+       case '!asistencia':        
+       case '!records':          
+       case '!promedio':    
+       case '!muerte':       
+       case '!muerte':    
+       case '!medallas':
+       case '!combat':   
+       case '!assists':       
+       case '!best':    
+       case '!average':          
+       case '!death':          
+       case '!medals':  
+                            return plat_reg+''+bt.replace("#","-")+'/allHeroes/';
+       default: return 0;
     }
+
+}
+
+function battletag(command){
+     
+    var res=command.split(' ');
+    var bt='';
+    var i=1;
+    
+    if(res[0]=='!heroe' || res[0]=='!hero')
+        i = 2;
+    
+    for(;i<res.length;i++){
+        bt+=res[i];
+        if(i+1!=res.length)
+            bt+=' ';
+    }
+    
+    return bt;
+    
 }
 
 function translate(s,cm){
@@ -416,12 +454,12 @@ function errorMessage(value,lang){
                 case 1:
                          msg =   "`!perfil, !combate, !asistencia, !records, !promedio, !muerte, !medallas`\n"+
                                  "   !perfil usuario#1595\n\n"+
-                                 "`!heroe Battletag heroe plataforma region`\n"+
-                                 "   ej: !heroe usuario#1595 Widowmaker\n\n"+
+                                 "`!heroe heroe Battletag `\n"+
+                                 "   ej: !heroe Widowmaker usuario#1595\n\n"+
                                  "`Regiones`\n"+
-                                 "   Solo soporte para us\n\n"+
+                                 "   Solo soporte para us y eu\n\n"+
                                  "`Plataformas`\n"+
-                                 "   Solo soporte para pc \n\n"+
+                                 "   PC - PSN - XBL \n\n"+
                                  "`Heroes`\n"+
                                  "  **Ofensivos:** *Genji, McCree, Pharah, Reaper, Soldier76, Tracer*\n"+
                                  "  **Defensivos:** *Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker*\n"+
@@ -433,17 +471,17 @@ function errorMessage(value,lang){
                 case 2:
                          msg =   "`!perfil, !combate, !asistencia, !records, !promedio, !muerte, !medallas`\n"+
                                  "   !perfil usuario#1595\n\n"+
-                                 "`!heroes Battletag heroe plataforma region`\n"+
-                                 "   ej: !heroe usuario#1595 Widowmaker pc us\n\n"+
+                                 "`!heroe heroe Battletag `\n"+
+                                 "   ej: !heroe Widowmaker usuario#1595\n\n"+
                                  "`Regiones`\n"+
-                                 "   Solo soporte para us\n\n"+
+                                 "   Solo soporte para us y eu\n\n"+
                                  "`Plataformas`\n"+
-                                 "   Solo soporte para pc \n\n"+
+                                 "   PC - PSN - XBL \n\n"+
                                  "  Bot realizado por la comunidad __*www.overwatchlatino.com*__ - Jucezt#9039\n";
                                  break;
                 case 3:
-                         msg =   "\n`!heroe Battletag heroe plataforma region`\n"+
-                                 "   ej: !heroe usuario#1595 Widowmaker pc us\n\n"+
+                         msg =   "\n`!heroe heroe Battletag`\n"+
+                                 "   ej: !heroe Widowmaker usuario#1595\n\n"+
                                  "`Heroes (El heroe "+heroe+" no se encuentra registrado!)`\n\n"+
                                  "  **Ofensivos:** *Genji, McCree, Pharah, Reaper, Soldier76, Tracer*\n"+
                                  "  **Defensivos:** *Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker*\n"+
@@ -457,12 +495,12 @@ function errorMessage(value,lang){
                 case 1:
                          msg =   "`!profile, !combat, !assists, !best, !average, !death, !medals`\n"+
                                  "   !profile user#1595\n\n"+
-                                 "`!hero Battletag hero-name plataform region`\n"+
-                                 "   ej: !hero user#1595 Widowmaker\n\n"+
+                                 "`!hero hero-name Battletag`\n"+
+                                 "   ej: !hero Widowmaker user#1595\n\n"+
                                  "`Regions`\n"+
-                                 "   Support only us(Americas)\n\n"+
+                                 "   US - EU\n\n"+
                                  "`Plataform`\n"+
-                                 "   Support only PC \n\n"+
+                                 "   PC - PSN - XBL\n\n"+
                                  "`Heroes`\n"+
                                  "  **Offensive:** *Genji, McCree, Pharah, Reaper, Soldier76, Tracer*\n"+
                                  "  **Defensive:** *Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker*\n"+
@@ -474,17 +512,17 @@ function errorMessage(value,lang){
                 case 2:
                          msg =   "`!profile, !combat, !assists, !best, !average, !death, !medals`\n"+
                                  "   !profile user#1595\n\n"+
-                                 "`!hero Battletag hero-name plataform region`\n"+
-                                 "   ej: !hero user#1595 Widowmaker\n\n"+
+                                 "`!hero hero-name Battletag`\n"+
+                                 "   ej: !hero Widowmaker user#1595\n\n"+
                                  "`Regions`\n"+
-                                 "   Support only us(Americas)\n\n"+
+                                 "   US - EU\n\n"+
                                  "`Plataform`\n"+
-                                 "   Support only PC \n\n"+
+                                 "   PC - PSN - XBL\n\n"+
                                  "  Bot by __*www.overwatchlatino.com*__ - Jucezt#9039\n"
                                  break;
                 case 3:
-                         msg =   "`!hero Battletag hero-name plataform region`\n"+
-                                 "   ej: !hero user#1595 Widowmaker\n\n"+
+                         msg =   "`!hero hero-name Battletag`\n"+
+                                 "   ej: !hero Widowmaker user#1595\n\n"+
                                  "`Heroes ("+heroe+" not registered!)`\n\n"+
                                  "  **Offensive:** *Genji, McCree, Pharah, Reaper, Soldier76, Tracer*\n"+
                                  "  **Defensive:** *Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker*\n"+
