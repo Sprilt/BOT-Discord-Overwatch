@@ -16,7 +16,7 @@ bot.on("ready", function(event) {
 bot.on("message", function(user, userID, channelID, message, event) {
 	
     //LANG
-    var lang = 'es';
+    var lang = 'en';
     
     console.log(user + " - " + userID);
 	console.log("in " + channelID);

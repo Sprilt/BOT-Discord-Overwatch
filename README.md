@@ -9,7 +9,7 @@ NodeJS
 - Open overwatch.js
 - line 4: Token. (https://discordapp.com/developers/applications/me)
 - line 19: lang 'es' or 'en'
-- cmd run -> node overwatch.js
+- run node overwatch.js
 
 # Credits
 - LootBox API: https://api.lootbox.eu/documentation#/
