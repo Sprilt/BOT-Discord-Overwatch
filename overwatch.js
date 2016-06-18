@@ -1,7 +1,7 @@
 /*Variable area*/
 var Discord = require('discord.io');
 var bot = new Discord.Client({
-	token: "MTkyOTA0NjA3MTg4Mzg1Nzky.CkYPbw.lleCe4ep-WrpGCs6Ak8ptc2iAIk",
+	token: "",
 	autorun: true
 });
 
@@ -16,7 +16,7 @@ bot.on("ready", function(event) {
 bot.on("message", function(user, userID, channelID, message, event) {
 	
     //LANG
-    var lang = 'es';
+    var lang = 'en';
     
     /*console.log(user + " - " + userID);
 	console.log("in " + channelID);
