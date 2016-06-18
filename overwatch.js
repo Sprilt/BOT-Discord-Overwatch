@@ -1,7 +1,7 @@
 /*Variable area*/
 var Discord = require('discord.io');
 var bot = new Discord.Client({
-	token: "",
+	token: "MTkyOTA0NjA3MTg4Mzg1Nzky.CkYPbw.lleCe4ep-WrpGCs6Ak8ptc2iAIk",
 	autorun: true
 });
 
@@ -16,12 +16,12 @@ bot.on("ready", function(event) {
 bot.on("message", function(user, userID, channelID, message, event) {
 	
     //LANG
-    var lang = 'en';
+    var lang = 'es';
     
-    console.log(user + " - " + userID);
+    /*console.log(user + " - " + userID);
 	console.log("in " + channelID);
 	console.log(message);
-	console.log("----------");
+	console.log("----------");*/
 
     if(message.charAt(0)=='!' && message.indexOf('Error')==-1 && message.indexOf('Battletag')==-1){
         
@@ -38,15 +38,14 @@ bot.on("message", function(user, userID, channelID, message, event) {
 
             //BATTLETAG
             tag = battletag(message);
-            btag = '**Battletag:** *'+tag+'*\n';
+            btag = '**Battletag:** '+tag+'\n';
             heroe='';
             if((cm=='!heroe' || cm=='!hero') && array_msg.length>=3){
-                heroe = message.split(' ')[1].toLowerCase();
-                heroe = heroe.charAt(0).toUpperCase() + heroe.slice(1);
+                heroe = sheroe(message.split(' ')[1]);
                 if(lang=='es')
-                    btag+= '**Heroe:** *'+heroe+'*\n';
+                    btag+= '**Heroe:** '+heroe+'\n';
                 else
-                    btag+= '**Hero:** *'+heroe+'*\n';
+                    btag+= '**Hero:** '+heroe+'\n';
             }else if(cm=='!heroe' || cm=='!hero')
                 heroe='No Heroe';
 
@@ -57,24 +56,24 @@ bot.on("message", function(user, userID, channelID, message, event) {
 
                 request('https://api.lootbox.eu/'+commandOW(cm,tag,heroe,plat_reg[0]), function (error, response, body) {
                     if (!error && response.statusCode == 200 && apiResult(body))
-                            sendMessages(channelID, ["<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);  
+                            sendMessages(channelID, [":pushpin:<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);  
                     else{
                         request('https://api.lootbox.eu/'+commandOW(cm,tag,heroe,plat_reg[1]), function (error, response, body) {
                             if (!error && response.statusCode == 200 && apiResult(body))
-                                sendMessages(channelID, ["<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);
+                                sendMessages(channelID, [":pushpin:<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);
                             else{
                                 request('https://api.lootbox.eu/'+commandOW(cm,tag,heroe,plat_reg[2]), function (error, response, body) {
                                     if (!error && response.statusCode == 200 && apiResult(body))
-                                        sendMessages(channelID, ["<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);
+                                        sendMessages(channelID, [":pushpin:<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);
                                     else{
                                         request('https://api.lootbox.eu/'+commandOW(cm,tag,heroe,plat_reg[3]), function (error, response, body) {
                                             if (!error && response.statusCode == 200 && apiResult(body))
-                                                sendMessages(channelID, ["<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);
+                                                sendMessages(channelID, [":pushpin:<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);
                                             else{
                                                 if(lang=='es')
-                                                    sendMessages(channelID, ["<@"+userID+">\nError, si el problema persiste contactanos."]);
+                                                    sendMessages(channelID, [":pushpin:<@"+userID+">\n```Error, si el problema persiste contactanos.```"]);
                                                 else
-                                                    sendMessages(channelID, ["<@"+userID+">\nError, If problem persists please contact us."]);
+                                                    sendMessages(channelID, [":pushpin:<@"+userID+">\n```Error, If problem persists please contact us.```"]);
                                             }
                                         });
                                     }
@@ -85,10 +84,10 @@ bot.on("message", function(user, userID, channelID, message, event) {
                 });
 
             }else
-                sendMessages(channelID, ["<@"+userID+">\n\n"+errorMessage(1,lang)]);
+                sendMessages(channelID, ["<@"+userID+">\n\n```"+errorMessage(1,lang)+"```"]);
 
         }else
-            sendMessages(channelID, ["<@"+userID+">\n\n"+errorMessage(1,lang)]);
+            sendMessages(channelID, ["<@"+userID+">\n\n```"+errorMessage(1,lang)+"```"]);
         
     }
 
@@ -167,13 +166,13 @@ function createMessageApi1(body,msg,cm,lang){
           else
             s = translate(k,cm);
           if(s!='')
-              msg+="**"+s+":** *"+v+"*\n"; 
+              msg+="**"+s+":** "+v+"\n"; 
     });
     
     if(lang=='es')
-        return msg.replace("hours"," horas").replace("minutes"," minutos").replace("seconds"," segundos");
+        return msg.replace("hours"," horas").replace("minutes"," minutos").replace("seconds"," segundos").replace("hour"," hora").replace("minute"," minuto").replace("second"," segundo");
     else
-        return msg.replace("hours"," hours").replace("minutes"," minutes").replace("seconds"," seconds");
+        return msg.replace("hours"," hours").replace("minutes"," minutes").replace("seconds"," seconds").replace("hour"," hour").replace("minute"," minute").replace("second"," second");
 }
 
 function apiResult(body){
@@ -213,23 +212,30 @@ function commandOW(cm,bt,heroe,plat_reg){
 
 }
 
-function battletag(command){
-     
+function sheroe(heroe){
+    heroe = heroe.toLowerCase();
+    heroe =  heroe.charAt(0).toUpperCase() + heroe.slice(1);
+    switch(heroe){
+        case 'Mccree':
+            return 'McCree';
+        case 'D.va'
+            return 'D.Va';
+        default: return heroe;
+    } 
+}
+
+function battletag(command){  
     var res=command.split(' ');
     var bt='';
     var i=1;
-    
     if(res[0]=='!heroe' || res[0]=='!hero')
         i = 2;
-    
     for(;i<res.length;i++){
         bt+=res[i];
         if(i+1!=res.length)
             bt+=' ';
     }
-    
     return bt;
-    
 }
 
 function translate(s,cm){
