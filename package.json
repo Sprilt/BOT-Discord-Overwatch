@@ -1,5 +1,5 @@
 {
-  "name": "Overwatch Stats",
+  "name": "BOT-Discord-Overwatch",
   "version": "1.0",
   "description": "Javascript Bot for Discord. Game: Overwatch",
   "main": "./lib/index.js",
