@@ -38,14 +38,14 @@ bot.on("message", function(user, userID, channelID, message, event) {
 
             //BATTLETAG
             tag = battletag(message);
-            btag = '**Battletag:** '+tag+'\n';
+            btag = '**BattleTag:** '+tag+'\n';
             heroe='';
             if((cm=='!heroe' || cm=='!hero') && array_msg.length>=3){
                 heroe = sheroe(message.split(' ')[1]);
                 if(lang=='es')
-                    btag+= '**Heroe:** '+heroe+'\n';
+                    btag+= '**Héroe:** '+(message.split(' ')[1].charAt(0).toUpperCase() + message.split(' ')[1].slice(1))+'\n';
                 else
-                    btag+= '**Hero:** '+heroe+'\n';
+                    btag+= '**Hero:** '+(message.split(' ')[1].charAt(0).toUpperCase() + message.split(' ')[1].slice(1))+'\n';
             }else if(cm=='!heroe' || cm=='!hero')
                 heroe='No Heroe';
 
@@ -71,9 +71,9 @@ bot.on("message", function(user, userID, channelID, message, event) {
                                                 sendMessages(channelID, [":pushpin:<@"+userID+">\n"+createMessageApi1(body,btag,cm,lang)]);
                                             else{
                                                 if(lang=='es')
-                                                    sendMessages(channelID, [":pushpin:<@"+userID+">\n```Error, si el problema persiste contactanos.```"]);
+                                                    sendMessages(channelID, [":pushpin:<@"+userID+">\nError, no se encuentra el battletag "+tag+", si el problema persiste contáctanos.\n**Nota:** El battletag es sensible a las mayúscula y minúsculas."]);
                                                 else
-                                                    sendMessages(channelID, [":pushpin:<@"+userID+">\n```Error, If problem persists please contact us.```"]);
+                                                    sendMessages(channelID, [":pushpin:<@"+userID+">\nError, If problem persists please contact us.\n"]);
                                             }
                                         });
                                     }
@@ -84,10 +84,10 @@ bot.on("message", function(user, userID, channelID, message, event) {
                 });
 
             }else
-                sendMessages(channelID, ["<@"+userID+">\n\n```"+errorMessage(1,lang)+"```"]);
+                sendMessages(channelID, ["<@"+userID+">\n\n"+errorMessage(1,lang)]);
 
         }else
-            sendMessages(channelID, ["<@"+userID+">\n\n```"+errorMessage(1,lang)+"```"]);
+            sendMessages(channelID, ["<@"+userID+">\n\n"+errorMessage(1,lang)]);
         
     }
 
@@ -192,7 +192,7 @@ function commandOW(cm,bt,heroe,plat_reg){
                             return plat_reg+''+bt.replace("#","-")+'/profile';
        case '!hero':
        case '!heroe':       
-                            return plat_reg+''+bt.replace("#","-")+'/hero/'+heroe.replace("Torbjorn","Torbjoern")+'/';
+                            return plat_reg+''+bt.replace("#","-")+'/hero/'+sheroe(heroe)+'/';
        case '!combate': 
        case '!asistencia':        
        case '!records':          
@@ -218,8 +218,12 @@ function sheroe(heroe){
     switch(heroe){
         case 'Mccree':
             return 'McCree';
-        case 'D.va'
-            return 'D.Va';
+        case 'D.va':
+        case 'DVa':
+        case 'Dva':
+            return 'DVa';
+        case 'Torbjorn':
+            return 'Torbjoern';
         default: return heroe;
     } 
 }
@@ -460,39 +464,39 @@ function errorMessage(value,lang){
                 case 1:
                          msg =   "`!perfil, !combate, !asistencia, !records, !promedio, !muerte, !medallas`\n"+
                                  "   !perfil usuario#1595\n\n"+
-                                 "`!heroe heroe Battletag `\n"+
+                                 "`!heroe héroe BattleTag `\n"+
                                  "   ej: !heroe Widowmaker usuario#1595\n\n"+
                                  "`Regiones`\n"+
-                                 "   Solo soporte para us y eu\n\n"+
+                                 "   Sólo soporte para us y eu\n\n"+
                                  "`Plataformas`\n"+
                                  "   PC - PSN - XBL \n\n"+
-                                 "`Heroes`\n"+
-                                 "  **Ofensivos:** *Genji, McCree, Pharah, Reaper, Soldier76, Tracer*\n"+
-                                 "  **Defensivos:** *Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker*\n"+
-                                 "  **Tanques:** *D.Va, Reinhardt, Roadhog, Winston, Zarya*\n"+
-                                 "  **Soportes:** *Lucio, Mercy, Symmetra, Zenyatta*\n\n"+
+                                 "`Héroes`\n"+
+                                 "  **Ofensivos:** Genji, McCree, Pharah, Reaper, Soldier76, Tracer\n"+
+                                 "  **Defensivos:** Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker\n"+
+                                 "  **Tanques:** D.Va, Reinhardt, Roadhog, Winston, Zarya\n"+
+                                 "  **Soportes:** Lucio, Mercy, Symmetra, Zenyatta\n\n"+
                                  "`Información`\n"+
-                                 "  Bot realizado por la comunidad __*www.overwatchlatino.com*__ - Jucezt#9039\n"
+                                 "  Bot creado por la comunidad __*www.overwatchlatino.com*__ - Jucezt#9039 (Discord ID)\n"
                                 break;
                 case 2:
                          msg =   "`!perfil, !combate, !asistencia, !records, !promedio, !muerte, !medallas`\n"+
                                  "   !perfil usuario#1595\n\n"+
-                                 "`!heroe heroe Battletag `\n"+
+                                 "`!heroe heroe BattleTag `\n"+
                                  "   ej: !heroe Widowmaker usuario#1595\n\n"+
                                  "`Regiones`\n"+
-                                 "   Solo soporte para us y eu\n\n"+
+                                 "   Sólo soporte para us y eu\n\n"+
                                  "`Plataformas`\n"+
                                  "   PC - PSN - XBL \n\n"+
-                                 "  Bot realizado por la comunidad __*www.overwatchlatino.com*__ - Jucezt#9039\n";
+                                 "  Bot creado por la comunidad __*www.overwatchlatino.com*__ - Jucezt#9039 (Discord ID)\n";
                                  break;
                 case 3:
-                         msg =   "\n`!heroe heroe Battletag`\n"+
+                         msg =   "\n`!heroe heroe BattleTag`\n"+
                                  "   ej: !heroe Widowmaker usuario#1595\n\n"+
-                                 "`Heroes (El heroe "+heroe+" no se encuentra registrado!)`\n\n"+
-                                 "  **Ofensivos:** *Genji, McCree, Pharah, Reaper, Soldier76, Tracer*\n"+
-                                 "  **Defensivos:** *Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker*\n"+
-                                 "  **Tanques:** *D.Va, Reinhardt, Roadhog, Winston, Zarya*\n"+
-                                 "  **Soportes:** *Lucio, Mercy, Symmetra, Zenyatta*\n";
+                                 "`Héroes (El heroe "+heroe+" no se encuentra registrado!)`\n\n"+
+                                 "  **Ofensivos:** Genji, McCree, Pharah, Reaper, Soldier76, Tracer\n"+
+                                 "  **Defensivos:** Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker\n"+
+                                 "  **Tanques:** D.Va, Reinhardt, Roadhog, Winston, Zary\n"+
+                                 "  **Soportes:** Lucio, Mercy, Symmetra, Zenyatta\n";
                                  break;
                 default: msg = '';
         }
@@ -501,39 +505,39 @@ function errorMessage(value,lang){
                 case 1:
                          msg =   "`!profile, !combat, !assists, !best, !average, !death, !medals`\n"+
                                  "   !profile user#1595\n\n"+
-                                 "`!hero hero-name Battletag`\n"+
+                                 "`!hero hero-name BattleTag`\n"+
                                  "   ej: !hero Widowmaker user#1595\n\n"+
                                  "`Regions`\n"+
                                  "   US - EU\n\n"+
                                  "`Plataform`\n"+
                                  "   PC - PSN - XBL\n\n"+
                                  "`Heroes`\n"+
-                                 "  **Offensive:** *Genji, McCree, Pharah, Reaper, Soldier76, Tracer*\n"+
-                                 "  **Defensive:** *Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker*\n"+
-                                 "  **Tanks:** *D.Va, Reinhardt, Roadhog, Winston, Zarya*\n"+
-                                 "  **Supports:** *Lucio, Mercy, Symmetra, Zenyatta*\n\n"+
+                                 "  **Offensive:** Genji, McCree, Pharah, Reaper, Soldier76, Tracer\n"+
+                                 "  **Defensive:** Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker\n"+
+                                 "  **Tanks:** D.Va, Reinhardt, Roadhog, Winston, Zarya\n"+
+                                 "  **Supports:** Lucio, Mercy, Symmetra, Zenyatta\n\n"+
                                  "`Information`\n"+
-                                 "  Bot by __*www.overwatchlatino.com*__ - Jucezt#9039\n"
+                                 "  Bot by __*www.overwatchlatino.com*__ - Jucezt#9039 (Discord ID)\n"
                                 break;
                 case 2:
                          msg =   "`!profile, !combat, !assists, !best, !average, !death, !medals`\n"+
                                  "   !profile user#1595\n\n"+
-                                 "`!hero hero-name Battletag`\n"+
+                                 "`!hero hero-name BattleTag`\n"+
                                  "   ej: !hero Widowmaker user#1595\n\n"+
                                  "`Regions`\n"+
                                  "   US - EU\n\n"+
                                  "`Plataform`\n"+
                                  "   PC - PSN - XBL\n\n"+
-                                 "  Bot by __*www.overwatchlatino.com*__ - Jucezt#9039\n"
+                                 "  Bot by __*www.overwatchlatino.com*__ - Jucezt#9039 (Discord ID)\n"
                                  break;
                 case 3:
-                         msg =   "`!hero hero-name Battletag`\n"+
+                         msg =   "`!hero hero-name BattleTag`\n"+
                                  "   ej: !hero Widowmaker user#1595\n\n"+
                                  "`Heroes ("+heroe+" not registered!)`\n\n"+
-                                 "  **Offensive:** *Genji, McCree, Pharah, Reaper, Soldier76, Tracer*\n"+
-                                 "  **Defensive:** *Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker*\n"+
-                                 "  **Tanks:** *D.Va, Reinhardt, Roadhog, Winston, Zarya*\n"+
-                                 "  **Supports:** *Lucio, Mercy, Symmetra, Zenyatta*\n\n"
+                                 "  **Offensive:** Genji, McCree, Pharah, Reaper, Soldier76, Tracer\n"+
+                                 "  **Defensive:** Bastion, Hanzo, Junkrat, Mei, Torbjorn, Widowmaker\n"+
+                                 "  **Tanks:** D.Va, Reinhardt, Roadhog, Winston, Zarya\n"+
+                                 "  **Supports:** Lucio, Mercy, Symmetra, Zenyatta\n\n"
                                  break;
                 default: msg = '';
         }
